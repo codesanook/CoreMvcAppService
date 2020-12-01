@@ -9,6 +9,7 @@ env:
   AZURE_WEBAPP_NAME: cs-core-mvc # Set this to your application's name
   WEB_PROJECT_PATH: ${{github.workspace}}/CoreMvcAppService # Set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: 5.0.x # Set this to the dot net version to use
+  NODE_VERSION: 14.x # Set this to the Node.js version to use
 
 jobs:
   build:
@@ -24,9 +25,22 @@ jobs:
       # Checkout the repo
       - uses: actions/checkout@master
 
+      # https://github.com/actions/setup-node
+      - name: Use Node.js version ${{env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{env.NODE_VERSION}}
+
+      # Yarn command already installed 
+      # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md#package-management
+      # https://github.com/actions/virtual-environments/blob/main/images/linux/scripts/installers/nodejs.sh
+
+      # To build all Node.js projects with Yarn workspaces
       # https://classic.yarnpkg.com/en/docs/cli/workspaces/#toc-yarn-workspaces-run
+
       - name: Build all Node.js projects with Yarn Workspaces
         run: |
+          node --version
           yarn install
           yarn workspaces run build
 
@@ -58,6 +72,5 @@ jobs:
         with: 
           app-name: ${{env.AZURE_WEBAPP_NAME}} # Replace with your app name
           publish-profile: ${{secrets.AZURE_WEBAPP_PUBLISH_PROFILE}} # Define secret variable in repository settings as per action documentation
-          package: ./publish
-          working-directory: ${{env.WEB_PROJECT_PATH}}
+          package: ${{env.WEB_PROJECT_PATH}}/publish
 
