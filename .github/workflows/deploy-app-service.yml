@@ -6,18 +6,24 @@ on:
     branches:
       - develop
 env:
-  AZURE_WEBAPP_NAME: cs-core-mvc # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: "." # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: "5.0.x"           # set this to the dot net version to use
+  AZURE_WEBAPP_NAME: cs-core-mvc # Set this to your application's name
+  WEB_PROJECT_PATH: ${{github.workspace}}/CoreMvcAppService # Set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: 5.0.x # Set this to the dot net version to use
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_iddefaultsrun
+    # You can use default run to set default working directory
+    #defaults:
+    #  run:
+    #    working-directory: ${{env.WEB_PROJECT_PATH}}
+
     steps:
       # Checkout the repo
       - uses: actions/checkout@master
-      
+
       # Setup .NET Core SDK
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
@@ -26,13 +32,19 @@ jobs:
       
       # Build .NET project
       - name: Restore Nuget packages
-        run: dotnet restore
+        run: |
+            pwd
+            ls
+            dotnet restore
+        working-directory: ${{env.WEB_PROJECT_PATH}}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
+        working-directory: ${{env.WEB_PROJECT_PATH}}
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/publish
+        run: dotnet publish -c Release -o ./publish
+        working-directory: ${{env.WEB_PROJECT_PATH}}
 
       # Deploy to Azure Web apps
       - name: Run Azure webapp deploy action using publish profile credentials
@@ -40,4 +52,5 @@ jobs:
         with: 
           app-name: ${{env.AZURE_WEBAPP_NAME}} # Replace with your app name
           publish-profile: ${{secrets.AZURE_WEBAPP_PUBLISH_PROFILE}} # Define secret variable in repository settings as per action documentation
-          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/publish
+          package: ${{env.WEB_PROJECT_PATH}}/publish
+
