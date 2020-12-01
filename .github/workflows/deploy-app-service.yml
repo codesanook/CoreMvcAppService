@@ -24,6 +24,12 @@ jobs:
       # Checkout the repo
       - uses: actions/checkout@master
 
+      # https://classic.yarnpkg.com/en/docs/cli/workspaces/#toc-yarn-workspaces-run
+      - name: Build all Node.js projects with Yarn Workspaces
+        run: |
+          yarn install
+          yarn workspaces run build
+
       # Setup .NET Core SDK
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
