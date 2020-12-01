@@ -58,5 +58,6 @@ jobs:
         with: 
           app-name: ${{env.AZURE_WEBAPP_NAME}} # Replace with your app name
           publish-profile: ${{secrets.AZURE_WEBAPP_PUBLISH_PROFILE}} # Define secret variable in repository settings as per action documentation
-          package: ${{env.WEB_PROJECT_PATH}}/publish
+          package: ./publish
+          working-directory: ${{env.WEB_PROJECT_PATH}}
 
