@@ -1,6 +1,6 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
+# To use this file, you need to configure Pipelines settings in Azure DevOps portal.
+
+# Official document
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 # GitHub trigger https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#ci-triggers
@@ -21,8 +21,8 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-        pwd
-        ls
+      pwd
+      ls
   displayName: logging directory information
 
 - task: UseDotNet@2
@@ -56,13 +56,6 @@ steps:
     zipAfterPublish: True
   displayName: dotnet push --configuration $(BuildConfiguration) --output $(Build.SourcesDirectory)/publish
 
-- task: CmdLine@2
-  inputs:
-    script: |
-        ls -a $(Build.SourcesDirectory)/publish
-  displayName: logging directory information
-
-# this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: $(Build.SourcesDirectory)/publish
@@ -70,6 +63,6 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: codesanook-example-service-connection
+    azureSubscription: codesanook-examples-service-connection
     appName: cs-core-mvc-pipelines 
     package: $(Build.SourcesDirectory)/publish/**/*.zip  
