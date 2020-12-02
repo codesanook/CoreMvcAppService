@@ -7,7 +7,7 @@ on:
       - develop
 env:
   AZURE_WEBAPP_NAME: cs-core-mvc # Set this to your application's name
-  WEB_PROJECT_PATH: ${{github.workspace}}/CoreMvcAppService # Set this to the path to your web app project, defaults to the repository root
+  WEB_PROJECT_DIR: ${{github.workspace}}/CoreMvcAppService # Set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: 5.0.x # Set this to the dot net version to use
   NODE_VERSION: 14.x # Set this to the Node.js version to use
 
@@ -19,7 +19,7 @@ jobs:
     # You can use default run to set default working directory
     #defaults:
     #  run:
-    #    working-directory: ${{env.WEB_PROJECT_PATH}}
+    #    working-directory: ${{env.WEB_PROJECT_DIR}}
 
     steps:
       # Checkout the repo
@@ -56,15 +56,15 @@ jobs:
             pwd
             ls
             dotnet restore
-        working-directory: ${{env.WEB_PROJECT_PATH}}
+        working-directory: ${{env.WEB_PROJECT_DIR}}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: ${{env.WEB_PROJECT_PATH}}
+        working-directory: ${{env.WEB_PROJECT_DIR}}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ./publish
-        working-directory: ${{env.WEB_PROJECT_PATH}}
+        working-directory: ${{env.WEB_PROJECT_DIR}}
 
       # Deploy to Azure Web apps
       - name: Run Azure webapp deploy action using publish profile credentials
@@ -72,5 +72,5 @@ jobs:
         with: 
           app-name: ${{env.AZURE_WEBAPP_NAME}} # Replace with your app name
           publish-profile: ${{secrets.AZURE_WEBAPP_PUBLISH_PROFILE}} # Define secret variable in repository settings as per action documentation
-          package: ${{env.WEB_PROJECT_PATH}}/publish
+          package: ${{env.WEB_PROJECT_DIR}}/publish
 
