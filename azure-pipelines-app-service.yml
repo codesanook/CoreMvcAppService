@@ -54,7 +54,7 @@ steps:
     arguments: --configuration $(BuildConfiguration) --output $(Build.SourcesDirectory)/publish
     publishWebProjects: True
     zipAfterPublish: True
-  displayName: dotnet push --configuration $(BuildConfiguration) --output $(Build.SourcesDirectory)/publish
+  displayName: dotnet publish --configuration $(BuildConfiguration) --output $(Build.SourcesDirectory)/publish
 
 - task: PublishBuildArtifacts@1
   inputs:
