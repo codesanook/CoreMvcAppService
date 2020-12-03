@@ -56,13 +56,16 @@ steps:
     zipAfterPublish: True
   displayName: dotnet publish --configuration $(BuildConfiguration) --output $(Build.SourcesDirectory)/publish
 
-- task: PublishBuildArtifacts@1
+- task: PublishPipelineArtifact@1
   inputs:
-    pathtoPublish: $(Build.SourcesDirectory)/publish
+    targetPath: $(Build.SourcesDirectory)/publish
     artifactName: artifect
+
+# TODO publish to Azure Devops Feed and release version number
 
 - task: AzureWebApp@1
   inputs:
     azureSubscription: codesanook-examples-service-connection
     appName: cs-core-mvc-pipelines 
     package: $(Build.SourcesDirectory)/publish/**/*.zip  
+
