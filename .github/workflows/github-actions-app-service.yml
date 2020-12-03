@@ -45,6 +45,7 @@ jobs:
           yarn workspaces run build
 
       # Setup .NET Core SDK
+      # https://github.com/actions/setup-dotnet
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -65,6 +66,8 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ./publish
         working-directory: ${{env.WEB_PROJECT_DIR}}
+
+      # TODO Deploy with custom Docker image https://docs.microsoft.com/en-us/azure/app-service/deploy-container-github-action?tabs=publish-profile
 
       # Deploy to Azure Web apps
       - name: Run Azure webapp deploy action using publish profile credentials
