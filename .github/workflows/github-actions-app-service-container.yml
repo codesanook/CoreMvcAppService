@@ -1,0 +1,35 @@
+name: Deploy ASP.NET Core MVC to Azure App Service Linux Container
+
+on: 
+  push:
+    branches:
+      - develop
+
+env:
+  AZURE_WEBAPP_NAME: codesanook # Set this to your application's name
+  LOGIN_SERVER: "codesanook.azurecr.io"
+  IMAGE_NAME: cs-core-mvc
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.LOGIN_SERVER }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - run: |
+        docker build . --tag ${{ env.LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker push ${{ env.LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}     
+
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_CONTAINER_PUBLISH_PROFILE }}
+        images: '${{ env.LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+
