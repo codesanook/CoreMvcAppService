@@ -36,3 +36,18 @@ yarn workspaces info
 ## Publish profile does not contain kudu UR
 - Change downloaded publish profile content from `waws-prod.publish.azurewebsites.windows.net` to `[app-name].scm.azurewebsites.net` and leave rest as it is and update in GitHub secret.
 - Or add app setting in Azure portal key `WEBSITE_WEBDEPLOY_USE_SCM` value `true`, download a publish profile and update in GitHub secret.
+
+# Unrecognized named-value
+# https://github.community/t/how-to-use-env-context/16975
+
+## Useful document
+ https://azure.github.io/AppService/2020/06/09/App-Service-Continuous-Deployment-for-Windows-Containers-with-GitHub-Actions.html
+ configure port number
+https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux#configure-port-number
+
+## TODO
+- [ ] Disable Admin user account
+
+# How to build and run docker image
+docker build . --tag mvc
+docker run --publish 5000:5000 mvc
